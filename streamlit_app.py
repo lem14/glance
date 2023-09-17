@@ -5,7 +5,8 @@ import pandas as pd
 import streamlit as st
 import simulate_patient
 import interact
-import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 import io
 from typing import List, Optional
 import markdown
@@ -14,6 +15,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from simulate_patient import vital_limits
 from plotly import express as px
 from plotly.subplots import make_subplots
 import pyperclip
@@ -113,9 +115,35 @@ with col4:
 patient = st.selectbox('Select Bed #:', range(1,11), 1)
 
 # plot recorded data
-def plotData(metric):
-    patient_data = simulate_patient.existing_data[metric]
-    st.line_chart(patient_data)
+#def plotData(metric, vital_limits):
+#    patient_data = simulate_patient.existing_data[metric]
+#    repeat = patient_data.shape[0]
+#    patient_const = simulate_patient.existing_data[metric] * repeat
+#    data = [patient_data.values, np.asarray(patient_const)]
+#    to_plot = pd.DataFrame(np.asarray(data).T ,columns=[metric, "const_val"])
+#    st.line_chart(to_plot)
+
+def plotData(metric, vital_limits):
+    
+    patient_data = simulate_patient.existing_data[metric].values
+
+    limits = []
+    for limit in vital_limits:
+        if metric in limit:
+            limits.append(vital_limits[limit])
+   
+   
+    lower = limits[0].values[0]
+    upper = limits[1].values[0]
+    #print(f"data shape has: {patient_data.size}, lower: {lower.size}, upper: {upper.size}")
+
+   
+    data = np.asarray([lower, patient_data, upper])
+
+
+    to_plot = pd.DataFrame(data.T , columns=["lower", metric, "upper"])
+    st.line_chart(to_plot)
+
 
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Systolic BP", "Diastolic BP", "Heart Rate",
@@ -123,24 +151,24 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Systolic BP", "Diastolic BP", "He
 
 with tab1:
    st.header("Systolic BP")
-   plotData('Systolic')
+   plotData('Systolic', vital_limits)
 
 with tab2:
    st.header("Diastolic BP")
-   plotData('Diastolic')
+   plotData('Diastolic', vital_limits)
 
 with tab3:
    st.header("Heart Rate")
-   plotData('HR')
+   plotData('HR' , vital_limits)
 
 with tab4:
    st.header("Respiratory Rate")
-   plotData('RR')
+   plotData('RR', vital_limits)
 
 with tab5:
    st.header("CO2")
-   plotData('CO2')
+   plotData('CO2', vital_limits)
 
 with tab6:
    st.header("SpO2")
-   plotData('SpO2')
+   plotData('SpO2', vital_limits)

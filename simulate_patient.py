@@ -12,3 +12,20 @@ existing_data = pd.DataFrame({
     'SpO2': [95, 95, 95, 95, 94, 97, 98, 91, 96, 93]
     })
 
+length = np.size(existing_data['Systolic'])
+
+vital_limits = pd.DataFrame({
+
+    'Systolic_lower': [105*np.ones(length)],
+    'Systolic_upper': [140*np.ones(length)],
+    'Diastolic_lower':[60*np.ones(length)],
+    'Diastolic_upper':[90*np.ones(length)],
+    'HR_lower': [60 *np.ones(length)],
+    'HR_upper': [100*np.ones(length)],
+    'RR_lower': [12*np.ones(length)],
+    'RR_upper': [18*np.ones(length)],
+    'CO2_lower': [23*np.ones(length)],
+    'CO2_upper': [29*np.ones(length)],
+    'SpO2_lower': [95*np.ones(length)],
+    'SpO2_upper': [100*np.ones(length)]
+})
